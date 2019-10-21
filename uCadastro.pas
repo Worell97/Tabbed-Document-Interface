@@ -35,6 +35,7 @@ type
     MemoDesc: TMemo;
     query: TSQLQuery;
     Label1: TLabel;
+    Label3: TLabel;
       procedure BtnGravarClick(Sender: TObject);
       procedure pLimpaCampos;
       procedure FormCreate(Sender: TObject);

@@ -93,8 +93,6 @@ implementation
 
 { TCadProDao }
 
-{ TCadProDao }
-
 constructor TCadProDao.Create;
 begin
   inherited;

@@ -21,9 +21,6 @@ object FormCadProd: TFormCadProd
     Height = 315
     Align = alClient
     TabOrder = 0
-    ExplicitTop = 336
-    ExplicitWidth = 592
-    ExplicitHeight = 186
     DesignSize = (
       595
       315)
@@ -75,9 +72,9 @@ object FormCadProd: TFormCadProd
     object LabelNome: TLabel
       Left = 60
       Top = 30
-      Width = 27
+      Width = 31
       Height = 13
-      Caption = 'Nome'
+      Caption = 'Nome:'
     end
     object Label2: TLabel
       Left = 41
@@ -99,8 +96,14 @@ object FormCadProd: TFormCadProd
       Width = 593
       Height = 13
       Align = alBottom
-      ExplicitTop = 508
       ExplicitWidth = 3
+    end
+    object Label3: TLabel
+      Left = 54
+      Top = 11
+      Width = 37
+      Height = 13
+      Caption = 'C'#243'digo:'
     end
     object BtnGravar: TBitBtn
       Left = 512
