@@ -29,13 +29,15 @@ type
     BtnGravar: TBitBtn;
     EditNome: TEdit;
     EditCusto: TEdit;
-    LabelNome: TLabel;
     Label2: TLabel;
     LabelCustoCompra: TLabel;
     MemoDesc: TMemo;
     query: TSQLQuery;
     Label1: TLabel;
     Label3: TLabel;
+    Edit1: TEdit;
+    BtnExcluir: TBitBtn;
+    BtnCancelar: TBitBtn;
       procedure BtnGravarClick(Sender: TObject);
       procedure pLimpaCampos;
       procedure FormCreate(Sender: TObject);

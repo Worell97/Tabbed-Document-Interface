@@ -2,8 +2,8 @@ object FormCadProd: TFormCadProd
   Left = 0
   Top = 0
   Caption = 'Cadastro de produtos'
-  ClientHeight = 315
-  ClientWidth = 595
+  ClientHeight = 211
+  ClientWidth = 500
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,15 +17,17 @@ object FormCadProd: TFormCadProd
   object pnl1: TPanel
     Left = 0
     Top = 0
-    Width = 595
-    Height = 315
+    Width = 500
+    Height = 211
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 595
+    ExplicitHeight = 315
     DesignSize = (
-      595
-      315)
+      500
+      211)
     object btnClose: TSpeedButton
-      Left = 572
+      Left = 477
       Top = -1
       Width = 23
       Height = 22
@@ -69,83 +71,104 @@ object FormCadProd: TFormCadProd
       OnClick = btnCloseClick
       ExplicitLeft = 569
     end
-    object LabelNome: TLabel
-      Left = 60
-      Top = 36
-      Width = 31
-      Height = 13
-      Caption = 'Nome:'
-    end
     object Label2: TLabel
-      Left = 41
-      Top = 91
+      Left = 42
+      Top = 39
       Width = 50
       Height = 13
       Caption = 'Descri'#231#227'o:'
     end
     object LabelCustoCompra: TLabel
-      Left = 6
-      Top = 62
-      Width = 85
+      Left = 7
+      Top = 84
+      Width = -12
       Height = 13
+      Anchors = [akLeft, akRight]
       Caption = 'Custo de compra:'
+      ExplicitTop = 78
+      ExplicitWidth = 85
     end
     object Label1: TLabel
       Left = 1
-      Top = 301
-      Width = 593
+      Top = 197
+      Width = 498
       Height = 13
       Align = alBottom
+      ExplicitTop = 301
       ExplicitWidth = 3
     end
     object Label3: TLabel
-      Left = 54
+      Left = 49
       Top = 10
-      Width = 37
+      Width = 42
       Height = 13
-      Caption = 'C'#243'digo:'
+      Caption = 'Produto:'
     end
     object BtnGravar: TBitBtn
-      Left = 512
-      Top = 27
+      Left = 384
+      Top = 7
       Width = 75
       Height = 21
+      Anchors = [akTop, akRight]
       Caption = 'Gravar'
       TabOrder = 0
       OnClick = BtnGravarClick
+      ExplicitLeft = 491
     end
     object EditNome: TEdit
-      Left = 98
-      Top = 33
-      Width = 372
+      Left = 151
+      Top = 7
+      Width = 223
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
+      ExplicitWidth = 330
     end
     object EditCusto: TEdit
-      Left = 98
-      Top = 59
-      Width = 372
-      Height = 21
-      Anchors = [akLeft, akTop, akRight]
+      Left = 99
+      Top = 88
+      Width = 275
+      Height = 22
+      Anchors = [akLeft, akRight, akBottom]
       TabOrder = 2
+      ExplicitWidth = 382
     end
     object MemoDesc: TMemo
-      Left = 98
-      Top = 86
-      Width = 372
-      Height = 214
+      Left = 99
+      Top = 34
+      Width = 275
+      Height = 50
       Anchors = [akLeft, akTop, akRight, akBottom]
       ImeMode = imHanguel
       TabOrder = 3
+      ExplicitWidth = 382
     end
     object Edit1: TEdit
-      Left = 98
+      Left = 99
       Top = 7
-      Width = 372
+      Width = 47
       Height = 21
-      Anchors = [akLeft, akTop, akRight]
       TabOrder = 4
+    end
+    object BtnExcluir: TBitBtn
+      Left = 384
+      Top = 34
+      Width = 75
+      Height = 21
+      Anchors = [akTop, akRight]
+      Caption = 'Excluir'
+      TabOrder = 5
+      OnClick = BtnGravarClick
+    end
+    object BtnCancelar: TBitBtn
+      Left = 384
+      Top = 61
+      Width = 75
+      Height = 21
+      Anchors = [akTop, akRight]
+      Caption = 'Cancelar'
+      TabOrder = 6
+      OnClick = BtnGravarClick
     end
   end
   object query: TSQLQuery

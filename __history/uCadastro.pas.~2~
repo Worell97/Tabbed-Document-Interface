@@ -1,4 +1,4 @@
-unit uCadastro;
+﻿unit uCadastro;
 
 interface
 
@@ -36,7 +36,6 @@ type
     query: TSQLQuery;
     Label1: TLabel;
     Label3: TLabel;
-    Edit1: TEdit;
       procedure BtnGravarClick(Sender: TObject);
       procedure pLimpaCampos;
       procedure FormCreate(Sender: TObject);
