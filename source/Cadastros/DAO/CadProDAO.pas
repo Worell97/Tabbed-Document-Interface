@@ -83,7 +83,6 @@ type
 
       function  TryLoad(const AObject: TDtoCadProduto; const ID: System.UnicodeString): Boolean;
       function  TryLoadList(const AObject: TDtoCadProdutos; const ACondicao: System.UnicodeString): Boolean;
-      function  LoadLastCod(const ACampo : System.UnicodeString; const ATabela : System.UnicodeString):System.UnicodeString;
 
       procedure Load   (const AObject: TDtoCadProduto; const ID: System.UnicodeString);
       procedure UnSafeDelete (const ID : System.UnicodeString);
@@ -116,12 +115,6 @@ procedure TCadProDao.Load(const AObject: TDtoCadProduto;
 begin
    if (not TryLoad(AObject, ID)) then
       raise;
-end;
-
-function TCadProDao.LoadLastCod(const ACampo,
-  ATabela: System.UnicodeString): System.UnicodeString;
-begin
-
 end;
 
 procedure TCadProDao.SafeDelete(const ID: System.UnicodeString);
