@@ -1,4 +1,4 @@
-unit TDI;
+﻿unit TDI;
 { *********************************************************************** }
 { Classe TTDI                                                             }
 {   Encapsula todo o código necessário para utilizar a interface TDI      }
@@ -33,7 +33,7 @@ unit TDI;
 
 interface
 
-uses ComCtrls, Forms, Messages, Controls, Menus, Classes;
+uses ComCtrls, Forms, Messages, Controls, Menus, Classes, System.Types;
 
 const
   WM_CLOSE_TAB = WM_USER + 1;

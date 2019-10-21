@@ -5,7 +5,9 @@ uses
   uMenu in 'uMenu.pas' {FMenu},
   uCadastro in 'uCadastro.pas' {FormCadProd},
   uVendas in 'uVendas.pas' {FormVendas},
-  uInicio in 'uInicio.pas' {FormInicio};
+  uInicio in 'uInicio.pas' {FormInicio},
+  Geral in 'Geral.pas',
+  CadProdDTO in 'source\Cadastros\DTO\CadProdDTO.pas';
 
 {$R *.res}
 

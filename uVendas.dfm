@@ -2,8 +2,8 @@ object FormVendas: TFormVendas
   Left = 0
   Top = 0
   Caption = 'Vendas'
-  ClientHeight = 551
-  ClientWidth = 861
+  ClientHeight = 528
+  ClientWidth = 652
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -30,8 +30,8 @@ object FormVendas: TFormVendas
   object GridPanel1: TGridPanel
     Left = 0
     Top = 0
-    Width = 861
-    Height = 551
+    Width = 652
+    Height = 528
     Align = alClient
     ColumnCollection = <
       item
@@ -56,24 +56,21 @@ object FormVendas: TFormVendas
         Value = 50.000000000000000000
       end>
     TabOrder = 0
-    ExplicitLeft = 520
-    ExplicitTop = 5
-    ExplicitWidth = 561
-    ExplicitHeight = 443
+    ExplicitTop = 28
+    ExplicitWidth = 861
+    ExplicitHeight = 523
     object Panel1: TPanel
       Left = 1
       Top = 1
-      Width = 859
-      Height = 274
+      Width = 650
+      Height = 263
       Align = alClient
       TabOrder = 0
-      ExplicitLeft = 136
-      ExplicitTop = 104
-      ExplicitWidth = 185
-      ExplicitHeight = 41
+      ExplicitLeft = 0
+      ExplicitTop = 17
       DesignSize = (
-        859
-        274)
+        650
+        263)
       object Label2: TLabel
         Left = 22
         Top = 16
@@ -102,96 +99,13 @@ object FormVendas: TFormVendas
         Height = 13
         Caption = '%'
       end
-      object EditDespesas: TEdit
-        Left = 81
-        Top = 13
-        Width = 75
-        Height = 21
-        NumbersOnly = True
-        TabOrder = 0
-        Text = '400'
-        OnExit = EditDespesasExit
-      end
-      object EditMargemLucro: TEdit
-        Left = 323
-        Top = 13
-        Width = 45
-        Height = 21
-        NumbersOnly = True
-        TabOrder = 1
-        Text = '0'
-        OnExit = EditMargemLucroExit
-      end
-      object DBGrid1: TDBGrid
-        Left = 22
-        Top = 60
-        Width = 731
-        Height = 170
-        Anchors = [akLeft, akTop, akRight, akBottom]
-        Options = [dgEditing, dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-        ReadOnly = True
-        TabOrder = 2
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'produto'
-            Title.Caption = 'Produto'
-            Width = 60
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'descricao'
-            Title.Caption = 'Descri'#231#227'o'
-            Width = 299
-            Visible = True
-          end
-          item
-            Alignment = taRightJustify
-            Expanded = False
-            FieldName = 'vlrTotal'
-            Title.Caption = 'Pre'#231'o de venda'
-            Width = 82
-            Visible = True
-          end>
-      end
-      object BtnAdicionar: TBitBtn
-        Left = 22
-        Top = 239
-        Width = 75
-        Height = 23
-        Anchors = [akLeft, akBottom]
-        Caption = 'Adicionar'
-        TabOrder = 3
-        OnClick = BtnAdicionarClick
-        ExplicitTop = 208
-      end
-      object BtnExcluir: TBitBtn
-        Left = 103
-        Top = 239
-        Width = 75
-        Height = 23
-        Anchors = [akLeft, akBottom]
-        Caption = 'Excluir'
-        TabOrder = 4
-        OnClick = BtnExcluirClick
-        ExplicitTop = 208
-      end
-      object btnClose: TBitBtn
-        Left = 835
-        Top = -1
-        Width = 24
-        Height = 20
-        Margins.Left = 0
-        Margins.Top = 0
-        Margins.Right = 0
-        Margins.Bottom = 0
+      object btnClose: TSpeedButton
+        Left = 627
+        Top = 0
+        Width = 23
+        Height = 22
         Anchors = [akTop, akRight]
+        Flat = True
         Glyph.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000000000000000000000000000000000000000000030000
@@ -227,24 +141,103 @@ object FormVendas: TFormVendas
           DEFF7D81DEFF7D80DEFF7D7FDEFF7C7FDDFF5C5EA3C100000004000000000000
           0002000000030000000400000004000000040000000400000004000000040000
           0004000000040000000400000005000000050000000300000001}
-        TabOrder = 5
         OnClick = btnCloseClick
+      end
+      object EditDespesas: TEdit
+        Left = 81
+        Top = 13
+        Width = 75
+        Height = 21
+        NumbersOnly = True
+        TabOrder = 0
+        Text = '400'
+        OnExit = EditDespesasExit
+      end
+      object EditMargemLucro: TEdit
+        Left = 323
+        Top = 13
+        Width = 45
+        Height = 21
+        NumbersOnly = True
+        TabOrder = 1
+        Text = '0'
+        OnExit = EditMargemLucroExit
+      end
+      object DBGrid1: TDBGrid
+        Left = 22
+        Top = 60
+        Width = 522
+        Height = 159
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        DataSource = DataSource1
+        Options = [dgEditing, dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        ReadOnly = True
+        TabOrder = 2
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'produto'
+            Title.Caption = 'Produto'
+            Width = 60
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'descricao'
+            Title.Caption = 'Descri'#231#227'o'
+            Width = 299
+            Visible = True
+          end
+          item
+            Alignment = taRightJustify
+            Expanded = False
+            FieldName = 'vlrTotal'
+            Title.Caption = 'Pre'#231'o de venda'
+            Width = 82
+            Visible = True
+          end>
+      end
+      object BtnAdicionar: TBitBtn
+        Left = 22
+        Top = 228
+        Width = 75
+        Height = 23
+        Anchors = [akLeft, akBottom]
+        Caption = 'Adicionar'
+        TabOrder = 3
+        OnClick = BtnAdicionarClick
+        ExplicitTop = 239
+      end
+      object BtnExcluir: TBitBtn
+        Left = 103
+        Top = 228
+        Width = 75
+        Height = 23
+        Anchors = [akLeft, akBottom]
+        Caption = 'Excluir'
+        TabOrder = 4
+        OnClick = BtnExcluirClick
+        ExplicitTop = 239
       end
     end
     object Panel2: TPanel
       Left = 1
-      Top = 275
-      Width = 859
-      Height = 275
+      Top = 264
+      Width = 650
+      Height = 263
       Align = alClient
       TabOrder = 1
-      ExplicitLeft = 120
-      ExplicitTop = 312
-      ExplicitWidth = 185
-      ExplicitHeight = 41
+      ExplicitTop = 275
+      ExplicitWidth = 859
+      ExplicitHeight = 275
       DesignSize = (
-        859
-        275)
+        650
+        263)
       object Label1: TLabel
         Left = 7
         Top = 12
@@ -261,11 +254,10 @@ object FormVendas: TFormVendas
       object DBGrid2: TDBGrid
         Left = 22
         Top = 37
-        Width = 731
-        Height = 170
+        Width = 522
+        Height = 158
         Anchors = [akLeft, akTop, akRight, akBottom]
         DataSource = DataSource2
-        Options = [dgEditing, dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         ReadOnly = True
         TabOrder = 0
         TitleFont.Charset = DEFAULT_CHARSET
@@ -285,7 +277,7 @@ object FormVendas: TFormVendas
             Expanded = False
             FieldName = 'descricao'
             Title.Caption = 'Descri'#231#227'o'
-            Width = 260
+            Width = 316
             Visible = True
           end
           item
@@ -316,63 +308,41 @@ object FormVendas: TFormVendas
         Text = '0'
       end
       object BtnFinalizar: TBitBtn
-        Left = 763
-        Top = 71
+        Left = 554
+        Top = 59
         Width = 90
         Height = 25
         Anchors = [akRight, akBottom]
         Caption = 'Finalizar compra'
         TabOrder = 2
         OnClick = BtnFinalizarClick
-        ExplicitLeft = 510
-        ExplicitTop = 21
+        ExplicitLeft = 763
+        ExplicitTop = 71
       end
       object BitBtn1: TBitBtn
-        Left = 763
-        Top = 102
+        Left = 554
+        Top = 90
         Width = 90
         Height = 25
         Anchors = [akRight, akBottom]
         Caption = 'Cancelar'
         TabOrder = 3
         OnClick = BtnFinalizarClick
-        ExplicitLeft = 510
-        ExplicitTop = 52
+        ExplicitLeft = 763
+        ExplicitTop = 102
       end
     end
   end
-  object TesteConnection: TSQLConnection
-    ConnectionName = 'teste'
-    DriverName = 'Sqlite'
-    LoginPrompt = False
-    Params.Strings = (
-      'DriverName=Sqlite'
-      'DriverUnit=Data.DbxSqlite'
-      
-        'DriverPackageLoader=TDBXSqliteDriverLoader,DBXSqliteDriver260.bp' +
-        'l'
-      
-        'MetaDataPackageLoader=TDBXSqliteMetaDataCommandFactory,DbxSqlite' +
-        'Driver260.bpl'
-      'FailIfMissing=True'
-      'Database=C:\teste.db'
-      'HostName=localhost')
-    Left = 390
-    Top = 12
-  end
-  object queryProdutos: TSQLQuery
-    MaxBlobSize = -1
-    Params = <>
-    SQLConnection = TesteConnection
-    Left = 456
-    Top = 13
-  end
   object DataSource1: TDataSource
-    Left = 360
-    Top = 190
+    Left = 24
+    Top = 191
   end
   object DataSource2: TDataSource
-    Left = 72
-    Top = 390
+    Left = 24
+    Top = 430
+  end
+  object queryProdutos: TFDQuery
+    Left = 593
+    Top = 9
   end
 end

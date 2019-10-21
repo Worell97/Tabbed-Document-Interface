@@ -3,115 +3,139 @@
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Data.FMTBcd,
-  Data.DB, Data.SqlExpr, Data.DbxSqlite;
+   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Data.FMTBcd,
+   Data.DB, Data.SqlExpr, Data.DbxSqlite, uMenu,
+   FireDAC.Stan.Intf,
+   FireDAC.Stan.Option,
+   FireDAC.Stan.Error,
+   FireDAC.UI.Intf,
+   FireDAC.Phys.Intf,
+   FireDAC.Stan.Def,
+   FireDAC.Stan.Pool,
+   FireDAC.Stan.Async,
+   FireDAC.Phys,
+   FireDAC.Phys.SQLite,
+   FireDAC.Phys.SQLiteDef,
+   FireDAC.Stan.ExprFuncs,
+   FireDAC.VCLUI.Wait,
+   FireDAC.Comp.Client,
+   Vcl.ExtCtrls;
 
 type
-  TFormCadProd = class(TForm)
-    LabelNome: TLabel;
-    LabelCustoCompra: TLabel;
-    Label2: TLabel;
+   TFormCadProd = class(TForm)
+    pnl1: TPanel;
+    btnClose: TSpeedButton;
+    BtnGravar: TBitBtn;
     EditNome: TEdit;
     EditCusto: TEdit;
+    LabelNome: TLabel;
+    Label2: TLabel;
+    LabelCustoCompra: TLabel;
     MemoDesc: TMemo;
-    BtnGravar: TBitBtn;
     query: TSQLQuery;
-    SQLConnection: TSQLConnection;
-    btnClose: TBitBtn;
-    procedure BtnGravarClick(Sender: TObject);
-    procedure pLimpaCampos;
-    function fVerificaCadastro(vsNome : String):Boolean;
-    procedure FormCreate(Sender: TObject);
-    procedure btnCloseClick(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
-  end;
+    Label1: TLabel;
+      procedure BtnGravarClick(Sender: TObject);
+      procedure pLimpaCampos;
+      procedure FormCreate(Sender: TObject);
+      procedure btnCloseClick(Sender: TObject);
+
+      function fVerificaCadastro(vsNome: String): Boolean;
+   private
+      { Private declarations }
+   public
+      { Public declarations }
+   end;
 
 var
-  FormCadProd: TFormCadProd;
+   FormCadProd: TFormCadProd;
 
 implementation
 
 {$R *.dfm}
 
-
 procedure TFormCadProd.btnCloseClick(Sender: TObject);
 begin
    Self.Close;
+   FTDI.Fechar(False);
 end;
 
 procedure TFormCadProd.BtnGravarClick(Sender: TObject);
 var
-  vsSQl,
-  vsNome,
-  vfCusto,
-  vsDescricao : String;
+   vsSQl, vsNome, vfCusto, vsDescricao: String;
 begin
-  vsNome := '';
-  vsDescricao := '';
-  vfCusto := '';
-  vsNome := EditNome.Text;
-  vsDescricao := MemoDesc.Text;
-  vfCusto := EditCusto.Text;
-  if (vsNome <> '') and (vsDescricao <> '') and ((vfCusto <> '') or (vfCusto = '0')) then
-  begin
-    if fVerificaCadastro(vsNome) then
-    begin
-      vsSQL :=  'update produtos set descricao = "'+vsDescricao+'", custo = '+vfCusto+
-                ' where nome = "'+vsNome+'"';
-    end
-    else
-      vsSQL := 'insert into produtos (id ,nome, descricao, custo) values (null, "'
-              +vsNome+'","'+vsDescricao+'",'+vfCusto+')';
-    query.close;
-    query.SQL.Clear;
-    query.SQL.Text := vsSQL;
-    query.ExecSQL(true);
-    pLimpaCampos;
-    EditNome.SetFocus;
-  end else
-    Showmessage('Preencha os campos antes de gravar os dados!')
+   vsNome := '';
+   vsDescricao := '';
+   vfCusto := '';
+   vsNome := EditNome.Text;
+   vsDescricao := MemoDesc.Text;
+   vfCusto := EditCusto.Text;
+   if (vsNome <> '') and (vsDescricao <> '') and ((vfCusto <> '') or (vfCusto = '0')) then
+   begin
+      if fVerificaCadastro(vsNome) then
+      begin
+         vsSQl := 'update produtos set descricao = "' + vsDescricao + '", custo = ' + vfCusto +
+           ' where nome = "' + vsNome + '"';
+      end
+      else
+         vsSQl := 'insert into produtos (id ,nome, descricao, custo) values (null, "' + vsNome +
+           '","' + vsDescricao + '",' + vfCusto + ')';
+      query.Close;
+      query.SQL.Clear;
+      query.SQL.Text := vsSQl;
+      query.ExecSQL(true);
+      pLimpaCampos;
+      EditNome.SetFocus;
+   end
+   else
+      Showmessage('Preencha os campos antes de gravar os dados!')
 end;
 
 procedure TFormCadProd.FormCreate(Sender: TObject);
-//var
-//  vsCaminho :String;
-begin
-//  vsCaminho := ExtractFilePath(Application.ExeName);
-//  SQLConnection.Connected:=False;
-//  SQLConnection.Params.Text := 'Database='+vsCaminho+'teste.db';
-//  try
-//    SQLConnection.Connected:=True;
-//  except
-//    ShowMessage('Erro ao conectar ao banco de dados, verifique se o mesmo se encontra no diretório da aplicação');
-//    Application.Terminate;
-//  end;
-end;
-
-function TFormCadProd.fVerificaCadastro(vsNome : String) : Boolean;
 var
-  vsSQL : String;
+   Present: TDateTime;
+   Connection: TFDConnection;
+   Year, Month, Day: Word;
 begin
-  vsSQL := 'select * from produtos where nome = "'+vsNome+'"';
-  query.close;
-  query.SQL.Clear;
-  query.SQL.Text := vsSQL;
-  query.open;
-  if query.RecordCount > 0 then
-  begin
-     Result := True;
-  end
-  else
-    Result := False;
+   Connection := TFDConnection.Create(Self);
+   Present := Now;
+   DecodeDate(Present, Year, Month, Day);
+   Label1.Caption := 'Today is Day ' + IntToStr(Day) + ' of Month ' + IntToStr(Month) + ' of Year '
+     + IntToStr(Year);
+   try
+      Connection:= FMenu.Connection;
+   finally
+      Connection.Close;
+   end;
+end;
+
+function TFormCadProd.fVerificaCadastro(vsNome: String): Boolean;
+var
+   vsSQl: String;
+begin
+   vsSQl := 'select * from produtos where nome = "' + vsNome + '"';
+   query.Close;
+   query.SQL.Clear;
+   query.SQL.Text := vsSQl;
+   query.open;
+   try
+      if query.RecordCount > 0 then
+      begin
+         Result := true;
+      end
+      else
+         Result := False;
+   finally
+      query.Close;
+   end;
 
 end;
+
 procedure TFormCadProd.pLimpaCampos;
 begin
-  EditNome.Clear;
-  EditCusto.Clear;
-  MemoDesc.Clear;
+   EditNome.Clear;
+   EditCusto.Clear;
+   MemoDesc.Clear;
 end;
+
 end.

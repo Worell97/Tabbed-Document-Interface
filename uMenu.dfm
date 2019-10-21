@@ -21,9 +21,6 @@ object FMenu: TFMenu
     Height = 443
     Align = alLeft
     TabOrder = 0
-    ExplicitLeft = 280
-    ExplicitTop = 140
-    ExplicitHeight = 185
     object Cadastro1: TBitBtn
       Left = 8
       Top = 30
@@ -59,5 +56,16 @@ object FMenu: TFMenu
       Caption = 'Multi-Instancia'
       TabOrder = 3
     end
+  end
+  object con1: TFDConnection
+    Params.Strings = (
+      'DriverID=SQLite'
+      
+        'Database=C:\Users\oscar.filho\OneDrive\ProjetoOscar\Parte 1\test' +
+        'e.db')
+    Connected = True
+    LoginPrompt = False
+    Left = 4
+    Top = 217
   end
 end
