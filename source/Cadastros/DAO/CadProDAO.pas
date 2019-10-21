@@ -202,7 +202,6 @@ begin
 
       end;
    end;
-end;  
 end;
 
 procedure TCadProDao.UnSafeDelete(const ID: System.UnicodeString);
