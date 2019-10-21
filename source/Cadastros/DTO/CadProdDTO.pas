@@ -26,7 +26,7 @@ type
    protected
 
    public
-      procedure Clear; inline;
+      procedure Clear; overload; inline;
       // constructor Create(const AOwner: EcoRT.Objects.TErtPersistent);override;
    published
       property ID: System.Integer read FID write FID;

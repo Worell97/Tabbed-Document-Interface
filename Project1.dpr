@@ -17,8 +17,5 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFMenu, FMenu);
-  Application.CreateForm(TFormCadProd, FormCadProd);
-  Application.CreateForm(TFormVendas, FormVendas);
-  Application.CreateForm(TFormInicio, FormInicio);
   Application.Run;
 end.
