@@ -25,7 +25,6 @@ uses
 type
    TFormCadProd = class(TForm)
     pnl1: TPanel;
-    btnClose: TSpeedButton;
     BtnGravar: TBitBtn;
     EditNome: TEdit;
     EditCusto: TEdit;
@@ -35,15 +34,19 @@ type
     query: TSQLQuery;
     Label1: TLabel;
     Label3: TLabel;
-    Edit1: TEdit;
+    EditID: TEdit;
     BtnExcluir: TBitBtn;
     BtnCancelar: TBitBtn;
+    BtnPesquisar: TBitBtn;
+    pnlHeader: TPanel;
+    btnClose: TSpeedButton;
       procedure BtnGravarClick(Sender: TObject);
       procedure pLimpaCampos;
       procedure FormCreate(Sender: TObject);
       procedure btnCloseClick(Sender: TObject);
 
       function fVerificaCadastro(vsNome: String): Boolean;
+    procedure EditIDExit(Sender: TObject);
    private
       { Private declarations }
    public
@@ -56,6 +59,9 @@ var
 implementation
 
 {$R *.dfm}
+uses
+   CadProDAO,
+   CadProdDTO;
 
 procedure TFormCadProd.btnCloseClick(Sender: TObject);
 begin
@@ -65,33 +71,55 @@ end;
 
 procedure TFormCadProd.BtnGravarClick(Sender: TObject);
 var
-   vsSQl, vsNome, vfCusto, vsDescricao: String;
+   CadProDAO : TCadProDao;
+   CadProdDTO: TDtoCadProduto;
 begin
-   vsNome := '';
-   vsDescricao := '';
-   vfCusto := '';
-   vsNome := EditNome.Text;
-   vsDescricao := MemoDesc.Text;
-   vfCusto := EditCusto.Text;
-   if (vsNome <> '') and (vsDescricao <> '') and ((vfCusto <> '') or (vfCusto = '0')) then
-   begin
-      if fVerificaCadastro(vsNome) then
+   CadProDAO := TCadProDao.Create();
+   CadProdDTO:= TDtoCadProduto.Create();
+   try
+      if (EditNome.Text <> '') and (MemoDesc.Text <> '') and ((EditCusto.Text <> '') or (EditCusto.Text <> '0')) then
       begin
-         vsSQl := 'update produtos set descricao = "' + vsDescricao + '", custo = ' + vfCusto +
-           ' where nome = "' + vsNome + '"';
+         if EditID.Enabled then
+         begin
+            CadProdDTO.ID:= 0;
+            CadProdDTO.Nome := EditNome.Text;
+            CadProdDTO.Descricao := EditNome.Text;
+            CadProdDTO.Custo := StrToFloat(EditNome.Text);
+         end else
+         begin
+
+         end;
+            pLimpaCampos;
+            EditNome.SetFocus;
       end
       else
-         vsSQl := 'insert into produtos (id ,nome, descricao, custo) values (null, "' + vsNome +
-           '","' + vsDescricao + '",' + vfCusto + ')';
-      query.Close;
-      query.SQL.Clear;
-      query.SQL.Text := vsSQl;
-      query.ExecSQL(true);
-      pLimpaCampos;
-      EditNome.SetFocus;
-   end
-   else
-      Showmessage('Preencha os campos antes de gravar os dados!')
+         Showmessage('Preencha os campos antes de gravar os dados!')
+   finally
+      FreeAndNil(CadProDAO);
+      FreeAndNil(CadProdDTO);
+   end;
+end;
+
+procedure TFormCadProd.EditIDExit(Sender: TObject);
+var
+   CadProDAO : TCadProDao;
+   CadProdDTO: TDtoCadProduto;
+begin
+   CadProDAO := TCadProDao.Create();
+   CadProdDTO:= TDtoCadProduto.Create();
+   try
+      if CadProDAO.TryLoad(CadProdDTO, EditID.Text) then
+      begin
+         EditNome.Text := CadProdDTO.Nome;
+         MemoDesc.Text := CadProdDTO.Descricao;
+         EditCusto.Text := FloatToStr(CadProdDTO.Custo);
+      end else
+         EditID.Text := '';
+      EditID.Enabled := False;
+   finally
+      FreeAndNil(CadProDAO);
+      FreeAndNil(CadProdDTO);
+   end;
 end;
 
 procedure TFormCadProd.FormCreate(Sender: TObject);

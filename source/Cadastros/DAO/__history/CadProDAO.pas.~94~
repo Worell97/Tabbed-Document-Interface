@@ -1,0 +1,263 @@
+﻿unit CadProDAO;
+
+interface
+
+uses
+   System.Generics.Collections,
+   Data,
+   uMenu,
+   System.SysUtils,
+   FireDAC.Stan.Intf,
+   FireDAC.Stan.Option,
+   FireDAC.Stan.Error,
+   FireDAC.UI.Intf,
+   FireDAC.Phys.Intf,
+   FireDAC.Stan.Def,
+   FireDAC.Stan.Pool,
+   FireDAC.Stan.Async,
+   FireDAC.Phys,
+   FireDAC.Phys.SQLite,
+   FireDAC.Phys.SQLiteDef,
+   FireDAC.Stan.ExprFuncs,
+   FireDAC.VCLUI.Wait,
+   FireDAC.Comp.Client,
+   FireDAC.Stan.Param,
+   Data.DB,
+   CadProdDTO;
+
+type
+   TCadProDao = class(System.TObject)
+   strict private
+    const
+      Select: System.UnicodeString =
+          ' SELECT                  ' +
+          '   ID,                   ' +
+          '   Nome,                 ' +
+          '   Descricao,            ' +
+          '   Custo                 ' +
+          '  FROM                   ' +
+          '   Produtos              ' ;
+
+      SelectCamp: System.UnicodeString =
+          'SELECT MAX(:Campo)           '+
+          '  AS  :Campo                 '+
+          ' FROM                        '+
+          '  :Tabela                    ';
+
+        Insert: System.UnicodeString =
+          'INSERT INTO              ' +
+          ' Produtos       (        ' +
+          '   Nome,                 ' +
+          '   Descricao,            ' +
+          '   Custo)                ' +
+          ' VALUES(                 ' +
+          '   :Nome,                ' +
+          '   :Descricao,           ' +
+          '   :Custo)               ' +
+          ' RETURNING ID            ' ;
+
+        Update: System.UnicodeString =
+          'UPDATE                          ' +
+          '  Produtos                      ' +
+          'SET                             ' +
+          '  Nome          = :Nome,        ' +
+          '  Descricao     = :Descricao,   ' +
+          '  Custo         = :Custo,       ' +
+          'WHERE                           ' +
+          '  ID = :ID                      ' ;
+
+        Delete: System.UnicodeString =
+          'DELETE FROM                 ' +
+          '  Produtos                  ' +
+          'WHERE                       ' +
+          '  ID = :ID                  ' ;
+
+
+
+    class procedure InternalLoad(var AQuery: TFDQuery; const AObject: TDtoCadProduto); static;
+  private
+   public
+
+      constructor Create;
+      procedure UnsafeSave(const AObject: TDtoCadProduto);
+      procedure Save(const AObject: TDtoCadProduto);
+
+      function  TryLoad(const AObject: TDtoCadProduto; const ID: System.UnicodeString): Boolean;
+      function  TryLoadList(const AObject: TDtoCadProdutos; const ACondicao: System.UnicodeString): Boolean;
+      function  LoadLastCod(const ACampo : System.UnicodeString; const ATabela : System.UnicodeString):System.UnicodeString;
+
+//      procedure Load   (const AObject: TDtoCadProduto; const ID: System.UnicodeString);
+      procedure UnSafeDelete (const ID : System.UnicodeString);
+      procedure SafeDelete (const ID : System.UnicodeString);
+   end;
+
+implementation
+
+{ TCadProDao }
+
+constructor TCadProDao.Create;
+begin
+  inherited;
+
+end;
+
+class procedure TCadProDao.InternalLoad(var AQuery: TFDQuery;
+  const AObject: TDtoCadProduto);
+begin
+   AObject.ID := AQuery.FieldByName('ID').AsInteger;
+   AObject.Nome := AQuery.FieldByName('Nome').AsString;
+   AObject.Descricao := AQuery.FieldByName('Descricao').AsString;
+   AObject.Custo := AQuery.FieldByName('Custo').AsFloat;
+end;
+//
+//procedure TCadProDao.Load(const AObject: TDtoCadProduto;
+//  const ID: System.UnicodeString);
+//begin
+//   if (not TryLoad(AObject, ID)) then
+//      raise
+//end;
+
+function TCadProDao.LoadLastCod(const ACampo,
+  ATabela: System.UnicodeString): System.UnicodeString;
+var
+   LQuery : TFDQuery;
+begin
+   Result := '';
+   if (ACampo <> '') and (ATabela <> '') then
+   begin
+      LQuery.SQL.Add(SelectCamp);
+      LQuery.ParamByName('Campo').AsString := ACampo;
+      LQuery.ParamByName('Tabela').AsString := ATabela;
+      LQuery.Open;
+   end;
+   Result := LQuery.FieldByName(ACampo).AsString;
+end;
+
+procedure TCadProDao.SafeDelete(const ID: System.UnicodeString);
+var
+   LQuery : TFDConnection;
+begin
+   LQuery.Create(nil);
+   LQuery.StartTransaction;
+   try
+      UnsafeDelete(ID);
+      LQuery.Commit;
+   except
+      LQuery.Rollback;
+      raise;
+   end;
+end;
+
+procedure TCadProDao.Save(const AObject: TDtoCadProduto);
+var
+   LQuery : TFDConnection;
+begin
+   LQuery.Create(nil);
+   LQuery.StartTransaction;
+   try
+      UnsafeSave(AObject);
+      LQuery.Commit;
+   except
+      LQuery.Rollback;
+      raise;
+   end;
+end;
+
+function TCadProDao.TryLoad(const AObject: TDtoCadProduto;
+  const ID: System.UnicodeString): Boolean;
+var
+   LQuery : TFDQuery;
+begin
+   Result := False;
+   if Trim(ID) <> '' then
+   begin
+      LQuery.Create(nil);
+      try
+         LQuery.SQL.Add(Select+' WHERE id = '+ID);
+         LQuery.Open;
+         if LQuery.IsEmpty then
+         begin
+            Exit
+         end else
+         begin
+            InternalLoad(LQuery, AObject);
+            Result := True;
+         end;
+      finally
+         LQuery.Destroy;
+      end;
+   end;
+end;
+
+function TCadProDao.TryLoadList(const AObject: TDtoCadProdutos;
+  const ACondicao: System.UnicodeString): Boolean;
+var
+   LQuery : TFDQuery;
+   CadProdDTO: TDtoCadProduto;
+begin
+   if Trim(ACondicao) <> '' then
+   begin
+      LQuery.Create(nil);
+      CadProdDTO:= TDtoCadProduto.Create();
+      try
+         LQuery.SQL.Add(Select+ACondicao);
+         LQuery.Open;
+         if LQuery.IsEmpty then
+         begin
+            Exit
+         end else
+         begin
+            while not(LQuery.Eof) do
+            begin
+               InternalLoad(LQuery, AObject.Items[(AObject.Add(CadProdDTO))]);
+            end;                                             
+            Result := True;
+         end;
+      finally
+         FreeAndNil(LQuery);
+         FreeAndNil(CadProdDTO);
+      end;
+   end;
+end;
+
+procedure TCadProDao.UnSafeDelete(const ID: System.UnicodeString);
+var
+  LQuery: TFDQuery;
+begin
+   if Trim(ID) <> '' then
+   begin
+      LQuery.Create(nil);
+      LQuery.SQL.Add(Delete);
+      LQuery.ParamByName('ID').AsString:= ID;
+      LQuery.ExecSQL;
+   end;
+end;
+
+procedure TCadProDao.UnsafeSave(const AObject: TDtoCadProduto);
+var
+  LQuery: TFDQuery;
+begin
+   if AObject.ID <=0 then
+   begin
+      LQuery.Create(nil);
+      LQuery.SQL.Add(Insert);
+      LQuery.ParamByName('ID').AsInteger:= AObject.ID;
+      LQuery.ParamByName('Nome').AsString:= AObject.Nome;
+      LQuery.ParamByName('Descricao').AsString:= AObject.Descricao;
+      LQuery.ParamByName('Custo').AsFloat:= AObject.Custo;
+      LQuery.Open;
+      AObject.ID := LQuery.FieldByName('GID').AsInteger;
+   end
+   else
+   begin
+      LQuery.Create(nil);
+      LQuery.SQL.Add(Update);
+      LQuery.ParamByName('ID').AsInteger:= AObject.ID;
+      LQuery.ParamByName('Nome').AsString:= AObject.Nome;
+      LQuery.ParamByName('Descricao').AsString:= AObject.Descricao;
+      LQuery.ParamByName('Custo').AsFloat:= AObject.Custo;
+      LQuery.ExecSQL;
+   end;
+end;
+
+end.

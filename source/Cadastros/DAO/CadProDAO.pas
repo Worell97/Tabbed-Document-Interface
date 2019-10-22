@@ -21,6 +21,7 @@ uses
    FireDAC.Stan.ExprFuncs,
    FireDAC.VCLUI.Wait,
    FireDAC.Comp.Client,
+   FireDAC.Stan.Param,
    Data.DB,
    CadProdDTO;
 
@@ -38,10 +39,10 @@ type
           '   Produtos              ' ;
 
       SelectCamp: System.UnicodeString =
-          'SELECT MAX(%s)           '+
-          '  AS  %s                 '+
-          ' FROM                    '+
-          '  %s                     ';
+          'SELECT MAX(:Campo)           '+
+          '  AS  :Campo                 '+
+          ' FROM                        '+
+          '  :Tabela                    ';
 
         Insert: System.UnicodeString =
           'INSERT INTO              ' +
@@ -77,14 +78,15 @@ type
   private
    public
 
-      constructor Create; override;
+      constructor Create;
       procedure UnsafeSave(const AObject: TDtoCadProduto);
       procedure Save(const AObject: TDtoCadProduto);
 
       function  TryLoad(const AObject: TDtoCadProduto; const ID: System.UnicodeString): Boolean;
       function  TryLoadList(const AObject: TDtoCadProdutos; const ACondicao: System.UnicodeString): Boolean;
+      function  LoadLastCod(const ACampo : System.UnicodeString; const ATabela : System.UnicodeString):System.UnicodeString;
 
-      procedure Load   (const AObject: TDtoCadProduto; const ID: System.UnicodeString);
+//      procedure Load   (const AObject: TDtoCadProduto; const ID: System.UnicodeString);
       procedure UnSafeDelete (const ID : System.UnicodeString);
       procedure SafeDelete (const ID : System.UnicodeString);
    end;
@@ -102,44 +104,76 @@ end;
 class procedure TCadProDao.InternalLoad(var AQuery: TFDQuery;
   const AObject: TDtoCadProduto);
 begin
-   AObject.ID := AQuery.FieldByName('ID');
-   AObject.Nome := AQuery.FieldByName('Nome');
-   AObject.Descricao := AQuery.FieldByName('Descricao');
-   AObject.Custo := AQuery.FieldByName('Custo');
+   AObject.ID := AQuery.FieldByName('ID').AsInteger;
+   AObject.Nome := AQuery.FieldByName('Nome').AsString;
+   AObject.Descricao := AQuery.FieldByName('Descricao').AsString;
+   AObject.Custo := AQuery.FieldByName('Custo').AsFloat;
 end;
+//
+//procedure TCadProDao.Load(const AObject: TDtoCadProduto;
+//  const ID: System.UnicodeString);
+//begin
+//   if (not TryLoad(AObject, ID)) then
+//      raise
+//end;
 
-procedure TCadProDao.Load(const AObject: TDtoCadProduto;
-  const ID: System.UnicodeString);
+function TCadProDao.LoadLastCod(const ACampo,
+  ATabela: System.UnicodeString): System.UnicodeString;
+var
+   LQuery : TFDQuery;
 begin
-   if (not TryLoad(AObject, ID)) then
-      raise;
+   LQuery.Create(nil);
+   try
+      Result := '';
+      if (ACampo <> '') and (ATabela <> '') then
+      begin
+         LQuery.SQL.Add(SelectCamp);
+         LQuery.ParamByName('Campo').AsString := ACampo;
+         LQuery.ParamByName('Tabela').AsString := ATabela;
+//         LQuery.Open;
+      end;
+      if LQuery.OpenOrExecute then
+         Result := LQuery.FieldByName(ACampo).AsString;
+   finally
+      FreeAndNil(LQuery);
+   end;
 end;
 
 procedure TCadProDao.SafeDelete(const ID: System.UnicodeString);
 var
-   Connection : TFMenu.Connection;
+   LQuery : TFDConnection;
 begin
-   Connection.StartTransaction;
+   LQuery.Create(nil);
    try
-      UnsafeDelete(ID);
-      Connection.Commit;
-   except
-      Connection.Rollback;
-      raise;
+      LQuery.StartTransaction;
+      try
+         UnsafeDelete(ID);
+         LQuery.Commit;
+      except
+         LQuery.Rollback;
+         raise;
+      end;
+   finally
+      FreeAndNil(LQuery);
    end;
 end;
 
 procedure TCadProDao.Save(const AObject: TDtoCadProduto);
 var
-   Connection : TFMenu.Connection;
+   LQuery : TFDConnection;
 begin
-   Connection.StartTransaction;
+   LQuery.Create(nil);
    try
-      UnsafeSave(AObject);
-      Connection.Commit;
-   except
-      Connection.Rollback;
-      raise;
+      LQuery.StartTransaction;
+      try
+         UnsafeSave(AObject);
+         LQuery.Commit;
+      except
+         LQuery.Rollback;
+         raise;
+      end;
+   finally
+      FreeAndNil(LQuery);
    end;
 end;
 
@@ -148,18 +182,20 @@ function TCadProDao.TryLoad(const AObject: TDtoCadProduto;
 var
    LQuery : TFDQuery;
 begin
+   Result := False;
    if Trim(ID) <> '' then
    begin
-      LQuery.Create(Self);
+      LQuery:= TFDQuery.Create(nil);
       try
-         LQuery.SQL := Select+' WHERE id = '+ID;
+         LQuery.SQL.Add(Select+' WHERE id = '+ID);
          LQuery.Open;
          if LQuery.IsEmpty then
          begin
             Exit
          end else
          begin
-            InternalLoad(LQuery, AObject)            
+            InternalLoad(LQuery, AObject);
+            Result := True;
          end;
       finally
          LQuery.Destroy;
@@ -171,12 +207,15 @@ function TCadProDao.TryLoadList(const AObject: TDtoCadProdutos;
   const ACondicao: System.UnicodeString): Boolean;
 var
    LQuery : TFDQuery;
+   CadProdDTO: TDtoCadProduto;
 begin
+   Result := False;
    if Trim(ACondicao) <> '' then
    begin
-      LQuery.Create(Self);
+      LQuery.Create(nil);
+      CadProdDTO:= TDtoCadProduto.Create();
       try
-         LQuery.SQL := Select+ACondicao;
+         LQuery.SQL.Add(Select+ACondicao);
          LQuery.Open;
          if LQuery.IsEmpty then
          begin
@@ -185,12 +224,13 @@ begin
          begin
             while not(LQuery.Eof) do
             begin
-               InternalLoad(LQuery, AObject.add);
-            end;                                             
+               InternalLoad(LQuery, AObject.Items[(AObject.Add(CadProdDTO))]);
+            end;
             Result := True;
          end;
       finally
-
+         FreeAndNil(LQuery);
+         FreeAndNil(CadProdDTO);
       end;
    end;
 end;
@@ -199,12 +239,17 @@ procedure TCadProDao.UnSafeDelete(const ID: System.UnicodeString);
 var
   LQuery: TFDQuery;
 begin
-   if Trim(ID) <> '' then
-   begin
-      LQuery.Create(Self);
-      LQuery.SQL:= Delete;
-      LQuery.Params('ID', ID);
-      LQuery.ExecSQL;
+   LQuery.Create(nil);
+   try
+      if Trim(ID) <> '' then
+      begin
+         LQuery.Create(nil);
+         LQuery.SQL.Add(Delete);
+         LQuery.ParamByName('ID').AsString:= ID;
+         LQuery.ExecSQL;
+      end;
+   finally
+      FreeAndNil(LQuery);
    end;
 end;
 
@@ -212,26 +257,29 @@ procedure TCadProDao.UnsafeSave(const AObject: TDtoCadProduto);
 var
   LQuery: TFDQuery;
 begin
-   if AObject.ID <=0 then
-   begin
-      LQuery.Create();
-      LQuery.SQL:= Insert;
-      LQuery.Params('ID', AObject.ID);
-      LQuery.Params('Nome', AObject.Nome);
-      LQuery.Params('Descricao', AObject.Descricao);
-      LQuery.Params('Custo', AObject.Custo);
-      LQuery.Open;
-      AObject.ID := LQuery.FieldByName('GID').AsInteger;
-   end
-   else
-   begin
-      LQuery.Create();
-      LQuery.SQL:= Update;
-      LQuery.Params('ID', AObject.ID);
-      LQuery.Params('Nome', AObject.Nome);
-      LQuery.Params('Descricao', AObject.Descricao);
-      LQuery.Params('Custo', AObject.Custo);
-      LQuery.ExecSQL;
+   LQuery.Create(nil);
+   try
+      if AObject.ID <=0 then
+      begin
+         LQuery.SQL.Add(Insert);
+         LQuery.ParamByName('ID').AsInteger:= AObject.ID;
+         LQuery.ParamByName('Nome').AsString:= AObject.Nome;
+         LQuery.ParamByName('Descricao').AsString:= AObject.Descricao;
+         LQuery.ParamByName('Custo').AsFloat:= AObject.Custo;
+         LQuery.Open;
+         AObject.ID := LQuery.FieldByName('GID').AsInteger;
+      end
+      else
+      begin
+         LQuery.SQL.Add(Update);
+         LQuery.ParamByName('ID').AsInteger:= AObject.ID;
+         LQuery.ParamByName('Nome').AsString:= AObject.Nome;
+         LQuery.ParamByName('Descricao').AsString:= AObject.Descricao;
+         LQuery.ParamByName('Custo').AsFloat:= AObject.Custo;
+         LQuery.ExecSQL;
+      end;
+   finally
+      FreeAndNil(LQuery);
    end;
 end;
 

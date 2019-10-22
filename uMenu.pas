@@ -50,7 +50,7 @@ type
 
    private
     FConnection: TFDConnection;
-    procedure Conexao();
+    procedure Conecta();
       { Private declarations }
    public
       { Public declarations }
@@ -71,31 +71,30 @@ uses
 
 procedure TFMenu.Cadastro1Click(Sender: TObject);
 begin
-
    FTDI.MostrarFormulario(TFormCadProd, chk1.Checked);
 end;
 
-procedure TFMenu.Conexao();
-var
-   vsCaminho : String;
+procedure TFMenu.Conecta();
+   procedure PreencheParametrosConexao();
+   begin
+      con1.Params.DriverID := 'SQLite';
+      con1.Params.Database := ExtractFilePath(Application.ExeName) + 'teste.db';
+   end;
+
 begin
-   vsCaminho := ExtractFilePath(Application.ExeName);
-   con1.Connected := False;
-   con1.Params.DriverID := 'SQLite';
-   con1.Params.Database := vsCaminho + 'teste.db';
+   PreencheParametrosConexao();
    try
       con1.Connected := True;
-      FConnection := con1;
    except
       ShowMessage
         ('Erro ao conectar ao banco de dados, verifique se o mesmo se encontra no diretório da aplicação');
-      Application.Terminate;
+      Exit;
    end;
 end;
 
 procedure TFMenu.FormCreate(Sender: TObject);
 begin
-   Conexao();
+   Conecta();
    FTDI := TTDI.Create(Self, TFormInicio);
    FTDI.MostrarMenuPopup := True;
 end;

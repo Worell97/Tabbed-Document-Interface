@@ -1,6 +1,7 @@
 ﻿unit CadProdDTO;
 {$pointermath on}
 {$scopedenums on}
+{$TYPEINFO ON}
 
 interface
 
@@ -18,10 +19,10 @@ type
    TDtoCadProduto = class(TObjectList<TDtoCadProdutos>)
       procedure InternalClear;
    private
-    FDescricao: System.Integer;
+    FDescricao: System.UnicodeString;
     FID: System.Integer;
-    FNome: System.Integer;
-    FCusto: System.Integer;
+    FNome: System.UnicodeString;
+    FCusto: System.Double;
 
    protected
 
@@ -30,9 +31,9 @@ type
       // constructor Create(const AOwner: EcoRT.Objects.TErtPersistent);override;
    published
       property ID: System.Integer read FID write FID;
-      property Nome: System.Integer read FNome write FNome;
-      property Descricao: System.Integer read FDescricao write FDescricao;
-      property Custo: System.Integer read FCusto write FCusto;
+      property Nome: System.UnicodeString read FNome write FNome;
+      property Descricao: System.UnicodeString read FDescricao write FDescricao;
+      property Custo: System.Double read FCusto write FCusto;
 
    end;
 
@@ -52,10 +53,10 @@ end;
 
 procedure TDtoCadProduto.InternalClear;
 begin
-   RTData.Clear(ID);
-   RTData.Clear(Nome);
-   RTData.Clear(Descricao);
-   RTData.Clear(Custo);
+   Self.ID := 0;
+   Self.Nome := '';
+   Self.Descricao := '';
+   Self.Custo := 0;
 end;
 
 end.
