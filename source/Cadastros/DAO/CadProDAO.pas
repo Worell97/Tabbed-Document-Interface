@@ -36,7 +36,7 @@ type
           '   Descricao,            ' +
           '   Custo                 ' +
           '  FROM                   ' +
-          '   Produtos              ' ;
+          '   produtos              ' ;
 
       SelectCamp: System.UnicodeString =
           'SELECT MAX(:Campo)           '+
@@ -122,7 +122,7 @@ function TCadProDao.LoadLastCod(const ACampo,
 var
    LQuery : TFDQuery;
 begin
-   LQuery.Create(nil);
+   LQuery:= TFDQuery.Create(nil);
    try
       Result := '';
       if (ACampo <> '') and (ATabela <> '') then
@@ -143,7 +143,7 @@ procedure TCadProDao.SafeDelete(const ID: System.UnicodeString);
 var
    LQuery : TFDConnection;
 begin
-   LQuery.Create(nil);
+   LQuery:= TFDConnection.Create(nil);
    try
       LQuery.StartTransaction;
       try
@@ -162,7 +162,7 @@ procedure TCadProDao.Save(const AObject: TDtoCadProduto);
 var
    LQuery : TFDConnection;
 begin
-   LQuery.Create(nil);
+   LQuery:= TFDConnection.Create(nil);
    try
       LQuery.StartTransaction;
       try
@@ -212,7 +212,8 @@ begin
    Result := False;
    if Trim(ACondicao) <> '' then
    begin
-      LQuery.Create(nil);
+      LQuery:= TFDQuery.Create(nil);
+      LQuery.Connection := FMenu.Conecta;
       CadProdDTO:= TDtoCadProduto.Create();
       try
          LQuery.SQL.Add(Select+ACondicao);
@@ -239,7 +240,7 @@ procedure TCadProDao.UnSafeDelete(const ID: System.UnicodeString);
 var
   LQuery: TFDQuery;
 begin
-   LQuery.Create(nil);
+   LQuery:= TFDQuery.Create(nil);
    try
       if Trim(ID) <> '' then
       begin
@@ -257,7 +258,7 @@ procedure TCadProDao.UnsafeSave(const AObject: TDtoCadProduto);
 var
   LQuery: TFDQuery;
 begin
-   LQuery.Create(nil);
+   LQuery:= TFDQuery.Create(nil);
    try
       if AObject.ID <=0 then
       begin

@@ -241,12 +241,9 @@ end;
 procedure TFormVendas.pCarregaProdutos;
    function CalculaPrecoVenda(AObject : TDtoCadProduto; QtdeItens: Integer) : Double;
    var
-      vfRateioDespesas,
-      vfCustoCompra,
-      Despesas,
-      vfMargemLucro,
-      vfPrecoVenda: double;
+      Despesas: double;
    begin
+
       if StrToFloat(EditDespesas.Text) = 0 then
       begin
          Despesas := 400;
@@ -258,7 +255,7 @@ procedure TFormVendas.pCarregaProdutos;
          QtdeItens := 1;
       end;
 
-      vfPrecoVenda := (AObject.Custo + (Despesas / QtdeItens)) * (1 + StrToFloat(EditMargemLucro.Text) / 100);
+      Result := (AObject.Custo + (Despesas / QtdeItens)) * (1 + StrToFloat(EditMargemLucro.Text) / 100);
    end;
 
 var
@@ -270,18 +267,18 @@ begin
    CadProdDTOList:= TDtoCadProdutos.Create();
    CadProdDTO:= TDtoCadProduto.Create();
    try
-         if CadProDAO.TryLoadList(CadProdDTOList, ' where custo > 0') then
+      if CadProDAO.TryLoadList(CadProdDTOList, ' where custo > 0') then
+      begin
+         for CadProdDTO in CadProdDTOList do
          begin
-            for CadProdDTO in CadProdDTOList do
-            begin
-               cDS_Produtos.Append;
-               cDS_Produtos.Fieldbyname('produto').AsString := CadProdDTO.Nome;
-               cDS_Produtos.Fieldbyname('descricao').AsString := CadProdDTO.Descricao;
-               cDS_Produtos.Fieldbyname('custo').AsFloat := StrToFloat(FormatFloat('#.##', CadProdDTO.Custo));
-               cDS_Produtos.Fieldbyname('vlrTotal').AsFloat := StrToFloat(FormatFloat('#.##', CalculaPrecoVenda(CadProdDTO, CadProdDTOList.Count)));
-               cDS_Produtos.Post;
-            end;
+            cDS_Produtos.Append;
+            cDS_Produtos.Fieldbyname('produto').AsString := CadProdDTO.Nome;
+            cDS_Produtos.Fieldbyname('descricao').AsString := CadProdDTO.Descricao;
+            cDS_Produtos.Fieldbyname('custo').AsFloat := StrToFloat(FormatFloat('#.##', CadProdDTO.Custo));
+            cDS_Produtos.Fieldbyname('vlrTotal').AsFloat := StrToFloat(FormatFloat('#.##', CalculaPrecoVenda(CadProdDTO, CadProdDTOList.Count)));
+            cDS_Produtos.Post;
          end;
+      end;
    finally
       FreeAndNil(CadProDAO);
       FreeAndNil(CadProdDTOList);

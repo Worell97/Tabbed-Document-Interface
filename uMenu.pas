@@ -50,10 +50,10 @@ type
 
    private
     FConnection: TFDConnection;
-    procedure Conecta();
       { Private declarations }
    public
       { Public declarations }
+      function Conecta():TFDConnection;
       property Connection : TFDConnection read FConnection write FConnection;
    end;
 
@@ -74,7 +74,7 @@ begin
    FTDI.MostrarFormulario(TFormCadProd, chk1.Checked);
 end;
 
-procedure TFMenu.Conecta();
+function TFMenu.Conecta(): TFDConnection;
    procedure PreencheParametrosConexao();
    begin
       con1.Params.DriverID := 'SQLite';
@@ -82,6 +82,7 @@ procedure TFMenu.Conecta();
    end;
 
 begin
+   Result := con1;
    PreencheParametrosConexao();
    try
       con1.Connected := True;
@@ -90,6 +91,7 @@ begin
         ('Erro ao conectar ao banco de dados, verifique se o mesmo se encontra no diretório da aplicação');
       Exit;
    end;
+   Result := con1;
 end;
 
 procedure TFMenu.FormCreate(Sender: TObject);
