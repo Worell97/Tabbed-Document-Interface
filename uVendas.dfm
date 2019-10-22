@@ -56,9 +56,6 @@ object FormVendas: TFormVendas
         Value = 50.000000000000000000
       end>
     TabOrder = 0
-    ExplicitTop = 28
-    ExplicitWidth = 861
-    ExplicitHeight = 523
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -66,8 +63,6 @@ object FormVendas: TFormVendas
       Height = 263
       Align = alClient
       TabOrder = 0
-      ExplicitLeft = 0
-      ExplicitTop = 17
       DesignSize = (
         650
         263)
@@ -211,7 +206,6 @@ object FormVendas: TFormVendas
         Caption = 'Adicionar'
         TabOrder = 3
         OnClick = BtnAdicionarClick
-        ExplicitTop = 239
       end
       object BtnExcluir: TBitBtn
         Left = 103
@@ -222,7 +216,6 @@ object FormVendas: TFormVendas
         Caption = 'Excluir'
         TabOrder = 4
         OnClick = BtnExcluirClick
-        ExplicitTop = 239
       end
     end
     object Panel2: TPanel
@@ -232,9 +225,6 @@ object FormVendas: TFormVendas
       Height = 263
       Align = alClient
       TabOrder = 1
-      ExplicitTop = 275
-      ExplicitWidth = 859
-      ExplicitHeight = 275
       DesignSize = (
         650
         263)
@@ -316,8 +306,6 @@ object FormVendas: TFormVendas
         Caption = 'Finalizar compra'
         TabOrder = 2
         OnClick = BtnFinalizarClick
-        ExplicitLeft = 763
-        ExplicitTop = 71
       end
       object BitBtn1: TBitBtn
         Left = 554
@@ -328,8 +316,6 @@ object FormVendas: TFormVendas
         Caption = 'Cancelar'
         TabOrder = 3
         OnClick = BtnFinalizarClick
-        ExplicitLeft = 763
-        ExplicitTop = 102
       end
     end
   end

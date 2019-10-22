@@ -94,7 +94,9 @@ var
 implementation
 
 uses
-   uMenu;
+   uMenu,
+   CadProdDTO,
+   CadProDAO;
 
 {$R *.dfm}
 
@@ -237,43 +239,53 @@ begin
 end;
 
 procedure TFormVendas.pCarregaProdutos;
-var
-   vfRateioDespesas, vfCustoCompra, vfDespesas, vfMargemLucro, vfPrecoVenda: double;
-   viQtdeItens: integer;
-begin
-   vfDespesas := StrToFloat(EditDespesas.Text);
-   if vfDespesas = 0 then
-      vfDespesas := 400;
-   queryProdutos.Connection := FMenu.Connection;
-   queryProdutos.SQL.Clear;
-   queryProdutos.SQL.Add('select * from  produtos where custo > 0');
-   queryProdutos.open;
-   queryProdutos.First;
-
-   if queryProdutos.RecordCount = 0 then
+   function CalculaPrecoVenda(AObject : TDtoCadProduto; QtdeItens: Integer) : Double;
+   var
+      vfRateioDespesas,
+      vfCustoCompra,
+      Despesas,
+      vfMargemLucro,
+      vfPrecoVenda: double;
    begin
-      viQtdeItens := 1;
-   end
-   else
-      viQtdeItens := queryProdutos.RecordCount;
+      if StrToFloat(EditDespesas.Text) = 0 then
+      begin
+         Despesas := 400;
+      end else
+         Despesas := 0;
 
-   vfRateioDespesas := (vfDespesas / viQtdeItens);
+      if QtdeItens <= 0 then
+      begin
+         QtdeItens := 1;
+      end;
 
-   while not queryProdutos.EOF do
-   begin
-      vfCustoCompra := StrToFloat(queryProdutos.Fieldbyname('custo').AsString);
-      vfMargemLucro := StrToFloat(EditMargemLucro.Text);
-      vfPrecoVenda := vfCustoCompra + vfRateioDespesas;
-      vfPrecoVenda := vfPrecoVenda * (1 + vfMargemLucro / 100);
-      cDS_Produtos.Append;
-      cDS_Produtos.Fieldbyname('produto').AsString := queryProdutos.Fieldbyname('nome').AsString;
-      cDS_Produtos.Fieldbyname('descricao').AsString := queryProdutos.Fieldbyname('descricao').AsString;
-      cDS_Produtos.Fieldbyname('custo').AsFloat := StrToFloat(FormatFloat('#.##', vfCustoCompra));
-      cDS_Produtos.Fieldbyname('vlrTotal').AsFloat := StrToFloat(FormatFloat('#.##', vfPrecoVenda));
-      cDS_Produtos.Post;
-      queryProdutos.Next;
+      vfPrecoVenda := (AObject.Custo + (Despesas / QtdeItens)) * (1 + StrToFloat(EditMargemLucro.Text) / 100);
    end;
-   queryProdutos.Close;
-end;
 
+var
+   CadProDAO : TCadProDao;
+   CadProdDTOList: TDtoCadProdutos;
+   CadProdDTO: TDtoCadProduto;
+begin
+   CadProDAO := TCadProDao.Create();
+   CadProdDTOList:= TDtoCadProdutos.Create();
+   CadProdDTO:= TDtoCadProduto.Create();
+   try
+         if CadProDAO.TryLoadList(CadProdDTOList, ' where custo > 0') then
+         begin
+            for CadProdDTO in CadProdDTOList do
+            begin
+               cDS_Produtos.Append;
+               cDS_Produtos.Fieldbyname('produto').AsString := CadProdDTO.Nome;
+               cDS_Produtos.Fieldbyname('descricao').AsString := CadProdDTO.Descricao;
+               cDS_Produtos.Fieldbyname('custo').AsFloat := StrToFloat(FormatFloat('#.##', CadProdDTO.Custo));
+               cDS_Produtos.Fieldbyname('vlrTotal').AsFloat := StrToFloat(FormatFloat('#.##', CalculaPrecoVenda(CadProdDTO, CadProdDTOList.Count)));
+               cDS_Produtos.Post;
+            end;
+         end;
+   finally
+      FreeAndNil(CadProDAO);
+      FreeAndNil(CadProdDTOList);
+      FreeAndNil(CadProdDTO);
+   end;
+end;
 end.
