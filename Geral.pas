@@ -13,7 +13,6 @@ uses
   Windows;
 
 implementation
-
 { Download de arquivos }
 function DownloadFile(Url, Dest: string): Boolean;
 begin

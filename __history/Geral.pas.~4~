@@ -1,0 +1,352 @@
+﻿unit Geral;
+
+interface
+
+uses
+  System.SysUtils,
+  System.Types,
+  Vcl.Forms,
+  UxTheme,
+  Themes,
+  Urlmon,
+  WinInet,
+  Windows;
+type
+   TGeral = class
+   public
+      function LongMonthName(Mes : Integer):System.UnicodeString;
+   end;
+
+implementation
+{ Download de arquivos }
+function DownloadFile(Url, Dest: string): Boolean;
+begin
+  try
+    Result := UrlDownloadToFile(nil, PChar(Url), PChar(Dest), 0, nil) = 0;
+  except
+    Result := False;
+  end;
+end;
+
+{ verificar a existencia da Url }
+
+function CheckUrl(Url: string): Boolean;
+var
+  hSession, hfile: hInternet;
+  dwindex, dwcodelen: dword;
+  dwcode: array [1 .. 20] of char;
+  res: PChar;
+begin
+  if pos('http://', lowercase(Url)) = 0 then
+    Url := 'http://' + Url;
+
+  Result := False;
+  hSession := InternetOpen('InetURL:/1.0', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+
+  if assigned(hSession) then
+  begin
+    hfile := InternetOpenUrl(hSession, PChar(Url), nil, 0, INTERNET_FLAG_RELOAD, 0);
+    dwindex := 0;
+    dwcodelen := 10;
+    HttpQueryInfo(hfile, HTTP_QUERY_STATUS_CODE, @dwcode, dwcodelen, dwindex);
+    res := PChar(@dwcode);
+    Result := (res = '200') or (res = '302');
+    if assigned(hfile) then
+      InternetCloseHandle(hfile);
+    InternetCloseHandle(hSession);
+  end;
+end;
+
+{Retorna o mês por extenço a partir do numero}
+function LongMonthName(Mes : integer):System.UnicodeString;
+begin
+   case Mes of
+      1: Result := 'Janeiro';
+      2: Result := 'Fevereiro';
+      3: Result := 'Março';
+      4: Result := 'Abril';
+      5: Result := 'Maio';
+      6: Result := 'Junho';
+      7: Result := 'Julho';
+      8: Result := 'Agosto';
+      9: Result := 'Setembro';
+      10: Result := 'Outubro';
+      11: Result := 'Novembro';
+      12: Result := 'Dezembro';
+   end;
+end;
+
+{ Criptografia, Action = C para criptografar e D para decriptografar }
+function Crypt(Action, Src: String): String;
+Label Fim;
+var
+  KeyLen: Integer;
+  KeyPos: Integer;
+  OffSet: Integer;
+  Dest, Key: String;
+  SrcPos: Integer;
+  SrcAsc: Integer;
+//  TmpSrcAsc: Integer;
+  Range: Integer;
+begin
+  if (Src = '') Then
+  begin
+    Result := '';
+    Goto Fim;
+  end;
+  Key := 'YUQL23KL23DF90WI5E1JAS467NMCXXL6JAOAUWWMCL0AOMM4A4VZYW9KHJUI2347EJHJKDF3424SKL K3LAKDJSL9RTIKJ';
+  Dest := '';
+  KeyLen := Length(Key);
+  KeyPos := 0;
+//  SrcPos := 0;
+//  SrcAsc := 0;
+  Range := 256;
+  if (Action = UpperCase('C')) then
+  begin
+    Randomize;
+    OffSet := Random(Range);
+    Dest := Format('%1.2x', [OffSet]);
+    for SrcPos := 1 to Length(Src) do
+    begin
+      Application.ProcessMessages;
+      SrcAsc := (Ord(Src[SrcPos]) + OffSet) Mod 255;
+      if KeyPos < KeyLen then
+        KeyPos := KeyPos + 1
+      else
+        KeyPos := 1;
+      SrcAsc := SrcAsc Xor Ord(Key[KeyPos]);
+      Dest := Dest + Format('%1.2x', [SrcAsc]);
+      OffSet := SrcAsc;
+    end;
+  end;
+//  Else if (Action = UpperCase('D')) then
+//  begin
+//    OffSet := StrToInt('$' + copy(Src, 1, 2));
+//    SrcPos := 3;
+//     repeat
+//     SrcAsc := StrToInt('$'+ copy(Src,SrcPos,2));
+//     if (KeyPos < KeyLen) Then KeyPos := KeyPos + 1 else KeyPos := 1;
+//     TmpSrcAsc := SrcAsc Xor Ord(Key[KeyPos]);
+//     if (TmpSrcAsc <OffSet> = Length(Src));
+//     until ;
+//  end;
+  Result := Dest;
+Fim:
+end;
+
+{ Conversão de numero inteiro para numero romano
+function RomanNumber(Value: LongInt): String;
+Label
+  A500, A400, A100, A90, A50, A40, A10, A9, A5, A4, A1;
+begin
+  Result := '';
+  while Value >= 1000 do
+  begin
+    Dec(Value, 1000);
+    Result := Result + 'M';
+  end;
+  if Value < 900 then
+    goto A500
+  else
+  begin
+    Dec(Value, 900);
+    Result := Result + 'CM';
+  end;
+  goto A90;
+A400:
+  if Value < 400 then
+    goto A100
+  else
+  begin
+    Dec(Value, 400);
+    Result := Result + 'CD';
+  end;
+  goto A90;
+A500:
+  if (Value < 50) and (Value >= 100) then
+  begin
+    Dec(Value, 100);
+    Result := Result + 'C';
+  end;
+A90:
+  if Value < 90 then
+    goto A50
+  else
+  begin
+    Dec(Value, 90);
+    Result := Result + 'XC';
+  end;
+  goto A9;
+A40:
+  if Value < 40 then
+    goto A10
+  else
+  begin
+    Dec(Value, 40);
+    Result := Result + 'XL';
+  end;
+  goto A9;
+A50:
+  if (Value < 50) and  (Value >= 10) then
+  begin
+    Dec(Value, 10);
+    Result := Result + 'X';
+  end;
+A9:
+  if Value < 9 then
+    goto A5
+  else
+  begin
+    Result := Result + 'IX';
+  end;
+  Exit;
+A4:
+  if Value < 4 then
+    goto A1
+  else
+  begin
+    Result := Result + 'IV';
+  end;
+  Exit;
+A5:
+  if (Value < 5) and (Value >= 1) then
+  begin
+    Dec(Value);
+    Result := Result + 'I';
+  end;
+end;}
+
+{ Validação de emails
+procedure SBValidMailClick(Sender: TObject);
+Var
+  ValidMail: String;
+begin
+  Memo1.Lines.Clear;
+  try
+    IdHTTP1.Host := 'www.webservicex.net';
+    ValidMail := IdHTTP1.Get('/ValidateEmail.asmx/IsValidEmail?Email=' + Edit1.Text);
+    if pos('true', ValidMail) > 0 then
+      ShowMessage('Email verdadeiro')
+    else
+      ShowMessage('Email falso')
+  except
+    ShowMessage('Lamento, ocorreu um erro ao processar validação.')
+  end;
+end;
+}
+
+{ Remove acentos }
+function RemoveAcentos(Valor: String): String;
+const
+  ComAcento = 'äàâêôûãõáéíóúçüèÄÀÂÊÔÛÃÕÁÉÍÓÚÇÜÈ';
+  SemAcento = 'aaaeouaoaeioucueAAAEOUAOAEIOUCUE';
+Var
+  I: Integer;
+begin
+  for I := 1 to Length(Valor) do
+    if pos(Valor[I], ComAcento) <> 0 then
+      Valor[I] := SemAcento[pos(Valor[I], ComAcento)];
+  Result := Valor;
+end;
+
+{ Capturar cor do pixel onde o mouse se encontra
+function DesktopColor(const X, Y: Integer): TColor;
+var
+  c: TCanvas;
+begin
+  c := TCanvas.Create;
+  try
+    c.Handle := GetWindowDC(GetDesktopWindow);
+    Result := GetPixel(c.Handle, X, Y);
+  finally
+    c.Free;
+  end;
+end; }
+
+{ Ordenação de grid
+Procedure OrdenarTituloGrid(Grid: TDBGrid; Coluna: TColumn; Cor: TColor);
+var
+  Campo: string;
+  I: Integer;
+begin
+  try
+    if Grid.DataSource.DataSet.Active then
+    begin
+      Campo := Coluna.FieldName;
+      Application.ProcessMessages;
+
+      if (Grid.DataSource.DataSet as TClientDataSet).IndexFieldNames <> Campo then
+        (Grid.DataSource.DataSet as TClientDataSet).IndexFieldNames := Campo;
+
+      for I := 0 to Coluna.Grid.FieldCount - 1 do
+      begin
+        Grid.Columns[I].Font.color := clBlack;
+        Grid.Columns[I].Title.color := Cor;
+      end;
+
+      Coluna.Font.color := clBlue;
+      Coluna.Title.color := clSkyBlue;
+    end;
+  except
+  end;
+end; }
+
+{ Grid Zebrado
+Procedure GridZebrado(RecNo: LongInt; Grid: TDBGrid; Rect: TRect; Column: TColumn;
+  State: TGridDrawState);
+*
+Begin
+  if not(Odd(RecNo)) then // Se não for par
+    if not(gdSelected in State) then
+    Begin // Se o estado da célula não é selecionado
+      with Grid do
+      Begin
+        with Canvas do
+        Begin
+          Brush.color := clMenu; // Cor da célula
+          FillRect(Rect); // Pinta a célula
+        End; // with Canvas
+        DefaultDrawDataCell(Rect, Column.Field, State) // Reescreve o valor que vem do banco
+      End // With Grid
+    End // if not (gdSelected in State)
+end;   }
+
+{ Limpar todos os componentes em tela
+procedure LimpaComponentes;
+begin
+  for I := 0 to ComponentCount - 1 do
+    if (Components[I] is TCustomEdit) then
+      (Components[I] as TCustomEdit).Clear;
+
+end;   }
+
+{ Distancia entre 2 pontos 2D
+function Dist2D(const X1, Y1, X2, Y2: Single): Single;
+begin
+  Result := Sqrt(Power(X2 - X1, 2) + Power(Y2 - Y1, 2));
+end;     }
+
+{ Distancia entre 2 pontos 3D
+function Dist3D(const X1, Y1, Z1, X2, Y2, Z2: Single): Single;
+begin
+  Result := Sqrt(Power(X2 - X1, 2) + Power(Y2 - Y1, 2) + Power(Z2 - Z1, 2));
+end;      }
+
+{ Permite apenas numeros inteiros, adicionar no OnKeyPress }
+//procedure DigitaInteiro(Sender: TObject; var Key: char);
+//var
+//  lib: Boolean;
+//begin
+//  lib := true;
+//  if not (Key in ['0' .. '9', #8]) and (Key <> #13) then
+//  begin
+//    lib := False;
+//  end;
+//  if not lib then
+//  begin
+//    MessageBeep(0);
+//    Key := #0;
+//  end;
+//end;
+
+end.

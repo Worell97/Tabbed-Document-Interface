@@ -21,6 +21,15 @@ object FMenu: TFMenu
     Height = 443
     Align = alLeft
     TabOrder = 0
+    object lblFooter: TLabel
+      Left = 1
+      Top = 429
+      Width = 183
+      Height = 13
+      Align = alBottom
+      Transparent = True
+      ExplicitWidth = 3
+    end
     object Cadastro1: TBitBtn
       Left = 8
       Top = 30
@@ -59,13 +68,9 @@ object FMenu: TFMenu
   end
   object con1: TFDConnection
     Params.Strings = (
-      'DriverID=SQLite'
-      
-        'Database=C:\Users\oscar.filho\OneDrive\ProjetoOscar\Parte 1\test' +
-        'e.db')
-    Connected = True
+      'ConnectionDef=con1')
     LoginPrompt = False
-    Left = 4
-    Top = 217
+    Left = 75
+    Top = 263
   end
 end

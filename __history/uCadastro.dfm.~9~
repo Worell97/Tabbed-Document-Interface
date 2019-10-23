@@ -1,0 +1,196 @@
+object FormCadProd: TFormCadProd
+  Left = 0
+  Top = 0
+  Caption = 'Cadastro de produtos'
+  ClientHeight = 308
+  ClientWidth = 581
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object pnl1: TPanel
+    Left = 0
+    Top = 25
+    Width = 581
+    Height = 283
+    Align = alClient
+    TabOrder = 0
+    ExplicitTop = 48
+    ExplicitHeight = 260
+    DesignSize = (
+      581
+      283)
+    object Label2: TLabel
+      Left = 42
+      Top = 39
+      Width = 50
+      Height = 13
+      Caption = 'Descri'#231#227'o:'
+    end
+    object LabelCustoCompra: TLabel
+      Left = 7
+      Top = 83
+      Width = 85
+      Height = 13
+      Caption = 'Custo de compra:'
+    end
+    object Label1: TLabel
+      Left = 1
+      Top = 269
+      Width = 579
+      Height = 13
+      Align = alBottom
+      ExplicitTop = 191
+      ExplicitWidth = 3
+    end
+    object Label3: TLabel
+      Left = 49
+      Top = 10
+      Width = 42
+      Height = 13
+      Caption = 'Produto:'
+    end
+    object BtnGravar: TBitBtn
+      Left = 477
+      Top = 34
+      Width = 75
+      Height = 21
+      Anchors = [akTop, akRight]
+      Caption = 'Gravar'
+      TabOrder = 0
+      OnClick = BtnGravarClick
+    end
+    object EditNome: TEdit
+      Left = 151
+      Top = 7
+      Width = 304
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 1
+      ExplicitWidth = 244
+    end
+    object EditCusto: TEdit
+      Left = 99
+      Top = 81
+      Width = 107
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 2
+      ExplicitWidth = 47
+    end
+    object MemoDesc: TMemo
+      Left = 99
+      Top = 34
+      Width = 356
+      Height = 43
+      Anchors = [akLeft, akTop, akRight]
+      ImeMode = imHanguel
+      TabOrder = 3
+      ExplicitWidth = 296
+    end
+    object EditID: TEdit
+      Left = 99
+      Top = 7
+      Width = 47
+      Height = 21
+      TabOrder = 4
+      OnExit = EditIDExit
+    end
+    object BtnExcluir: TBitBtn
+      Left = 477
+      Top = 61
+      Width = 75
+      Height = 21
+      Anchors = [akTop, akRight]
+      Caption = 'Excluir'
+      TabOrder = 5
+    end
+    object BtnCancelar: TBitBtn
+      Left = 477
+      Top = 88
+      Width = 75
+      Height = 21
+      Anchors = [akTop, akRight]
+      Caption = 'Cancelar'
+      TabOrder = 6
+    end
+    object BtnPesquisar: TBitBtn
+      Left = 477
+      Top = 7
+      Width = 75
+      Height = 21
+      Anchors = [akTop, akRight]
+      Caption = 'Pesquisar'
+      TabOrder = 7
+    end
+  end
+  object pnlHeader: TPanel
+    Left = 0
+    Top = 0
+    Width = 581
+    Height = 25
+    Align = alTop
+    TabOrder = 1
+    DesignSize = (
+      581
+      25)
+    object btnClose: TSpeedButton
+      AlignWithMargins = True
+      Left = 558
+      Top = 1
+      Width = 23
+      Height = 22
+      Anchors = [akTop, akRight]
+      Flat = True
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000000000000000000000000000000000000000000002525
+        25473A3A3A700000000000000000000000000000000000000000000000000000
+        00000000000000000000000000003D3D3D752525254700000000252525477F7F
+        7FF6848484FF3C3C3C7300000000000000000000000000000000000000000000
+        000000000000000000003E3E3E77848484FF808080F7252525474040407B8484
+        84FF848484FF848484FF3C3C3C73000000000000000000000000000000000000
+        0000000000003E3E3E77848484FF848484FF848484FF3F3F3F7A000000004242
+        427F848484FF848484FF848484FF3C3C3C730000000000000000000000000000
+        00003E3E3E77848484FF848484FF848484FF4141417E00000000000000000000
+        00004242427F848484FF848484FF848484FF3C3C3C7300000000000000003E3E
+        3E77848484FF848484FF848484FF4141417E0000000000000000000000000000
+        0000000000004242427F848484FF848484FF848484FF3C3C3C733E3E3E778484
+        84FF848484FF848484FF4141417E000000000000000000000000000000000000
+        000000000000000000004242427F848484FF848484FF848484FF848484FF8484
+        84FF848484FF4141417E00000000000000000000000000000000000000000000
+        00000000000000000000000000004242427F848484FF848484FF848484FF8484
+        84FF4141417E0000000000000000000000000000000000000000000000000000
+        00000000000000000000000000003E3E3E77848484FF848484FF848484FF8484
+        84FF3C3C3C740000000000000000000000000000000000000000000000000000
+        000000000000000000003E3E3E77848484FF848484FF848484FF848484FF8484
+        84FF848484FF3C3C3C7400000000000000000000000000000000000000000000
+        0000000000003E3E3E77848484FF848484FF848484FF4141417E4242427F8484
+        84FF848484FF848484FF3C3C3C74000000000000000000000000000000000000
+        00003E3E3E77848484FF848484FF848484FF4141417D00000000000000004242
+        427F848484FF848484FF848484FF3C3C3C740000000000000000000000003E3E
+        3E77848484FF848484FF848484FF4141417D0000000000000000000000000000
+        00004242427F848484FF848484FF848484FF3C3C3C74000000003D3D3D758484
+        84FF848484FF848484FF4141417D000000000000000000000000000000000000
+        0000000000004242427F848484FF848484FF848484FF3B3B3B722828284D8181
+        81F9848484FF4141417D00000000000000000000000000000000000000000000
+        000000000000000000004242427F848484FF818181F92828284E000000002828
+        284D3F3F3F7A0000000000000000000000000000000000000000000000000000
+        00000000000000000000000000004040407B2828284D00000000}
+      OnClick = btnCloseClick
+      ExplicitLeft = 555
+    end
+  end
+  object query: TSQLQuery
+    MaxBlobSize = -1
+    Params = <>
+    Left = 512
+    Top = 360
+  end
+end

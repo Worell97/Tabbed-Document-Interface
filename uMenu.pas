@@ -34,7 +34,8 @@ uses
    FireDAC.Phys.SQLiteDef,
    FireDAC.Stan.ExprFuncs,
    FireDAC.VCLUI.Wait,
-   FireDAC.Comp.Client;
+   FireDAC.Comp.Client,
+   Geral, FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef;
 
 type
    TFMenu = class(TForm)
@@ -43,7 +44,8 @@ type
       Vendas1: TBitBtn;
       BitBtn1: TBitBtn;
       chk1: TCheckBox;
-      con1: TFDConnection;
+    lblFooter: TLabel;
+    con1: TFDConnection;
       procedure Cadastro1Click(Sender: TObject);
       procedure Vendas1Click(Sender: TObject);
       procedure FormCreate(Sender: TObject);
@@ -95,7 +97,31 @@ begin
 end;
 
 procedure TFMenu.FormCreate(Sender: TObject);
+   {Retorna o mês por extenço a partir do numero}
+   function LongMonthName(Mes : integer):System.UnicodeString;
+   begin
+      case Mes of
+         1: Result := 'Janeiro';
+         2: Result := 'Fevereiro';
+         3: Result := 'Março';
+         4: Result := 'Abril';
+         5: Result := 'Maio';
+         6: Result := 'Junho';
+         7: Result := 'Julho';
+         8: Result := 'Agosto';
+         9: Result := 'Setembro';
+         10: Result := 'Outubro';
+         11: Result := 'Novembro';
+         12: Result := 'Dezembro';
+      end;
+   end;
+var
+   Year, Month, Day: Word;
+
 begin
+   DecodeDate(Now, Year, Month, Day);
+   lblFooter.Caption := IntToStr(Day) + ' de ' + LongMonthName(Month) + ' de '
+     + IntToStr(Year);
    Conecta();
    FTDI := TTDI.Create(Self, TFormInicio);
    FTDI.MostrarMenuPopup := True;

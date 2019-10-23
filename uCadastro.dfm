@@ -1,9 +1,11 @@
 object FormCadProd: TFormCadProd
   Left = 0
   Top = 0
+  BorderIcons = []
+  BorderStyle = bsNone
   Caption = 'Cadastro de produtos'
-  ClientHeight = 308
-  ClientWidth = 581
+  ClientHeight = 347
+  ClientWidth = 597
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,15 +19,15 @@ object FormCadProd: TFormCadProd
   object pnl1: TPanel
     Left = 0
     Top = 25
-    Width = 581
-    Height = 283
+    Width = 597
+    Height = 322
     Align = alClient
     TabOrder = 0
-    ExplicitTop = 48
-    ExplicitHeight = 260
+    ExplicitWidth = 581
+    ExplicitHeight = 283
     DesignSize = (
-      581
-      283)
+      597
+      322)
     object Label2: TLabel
       Left = 42
       Top = 39
@@ -40,15 +42,6 @@ object FormCadProd: TFormCadProd
       Height = 13
       Caption = 'Custo de compra:'
     end
-    object Label1: TLabel
-      Left = 1
-      Top = 269
-      Width = 579
-      Height = 13
-      Align = alBottom
-      ExplicitTop = 191
-      ExplicitWidth = 3
-    end
     object Label3: TLabel
       Left = 49
       Top = 10
@@ -57,7 +50,7 @@ object FormCadProd: TFormCadProd
       Caption = 'Produto:'
     end
     object BtnGravar: TBitBtn
-      Left = 477
+      Left = 493
       Top = 34
       Width = 75
       Height = 21
@@ -65,34 +58,35 @@ object FormCadProd: TFormCadProd
       Caption = 'Gravar'
       TabOrder = 0
       OnClick = BtnGravarClick
+      ExplicitLeft = 477
     end
     object EditNome: TEdit
       Left = 151
       Top = 7
-      Width = 304
+      Width = 320
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
-      ExplicitWidth = 244
+      ExplicitWidth = 304
     end
     object EditCusto: TEdit
       Left = 99
       Top = 81
-      Width = 107
+      Width = 123
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 2
-      ExplicitWidth = 47
+      ExplicitWidth = 107
     end
     object MemoDesc: TMemo
       Left = 99
       Top = 34
-      Width = 356
+      Width = 372
       Height = 43
       Anchors = [akLeft, akTop, akRight]
       ImeMode = imHanguel
       TabOrder = 3
-      ExplicitWidth = 296
+      ExplicitWidth = 356
     end
     object EditID: TEdit
       Left = 99
@@ -103,46 +97,51 @@ object FormCadProd: TFormCadProd
       OnExit = EditIDExit
     end
     object BtnExcluir: TBitBtn
-      Left = 477
+      Left = 493
       Top = 61
       Width = 75
       Height = 21
       Anchors = [akTop, akRight]
       Caption = 'Excluir'
       TabOrder = 5
+      ExplicitLeft = 477
     end
     object BtnCancelar: TBitBtn
-      Left = 477
+      Left = 493
       Top = 88
       Width = 75
       Height = 21
       Anchors = [akTop, akRight]
       Caption = 'Cancelar'
       TabOrder = 6
+      ExplicitLeft = 477
     end
     object BtnPesquisar: TBitBtn
-      Left = 477
+      Left = 493
       Top = 7
       Width = 75
       Height = 21
       Anchors = [akTop, akRight]
       Caption = 'Pesquisar'
       TabOrder = 7
+      ExplicitLeft = 477
     end
   end
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 581
+    Width = 597
     Height = 25
     Align = alTop
+    Caption = 'Cadastro de produtos'
     TabOrder = 1
+    ExplicitWidth = 581
     DesignSize = (
-      581
+      597
       25)
     object btnClose: TSpeedButton
       AlignWithMargins = True
-      Left = 558
+      Left = 574
       Top = 1
       Width = 23
       Height = 22

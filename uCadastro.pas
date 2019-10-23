@@ -32,7 +32,6 @@ type
     LabelCustoCompra: TLabel;
     MemoDesc: TMemo;
     query: TSQLQuery;
-    Label1: TLabel;
     Label3: TLabel;
     EditID: TEdit;
     BtnExcluir: TBitBtn;
@@ -124,15 +123,9 @@ end;
 
 procedure TFormCadProd.FormCreate(Sender: TObject);
 var
-   Present: TDateTime;
    Connection: TFDConnection;
-   Year, Month, Day: Word;
 begin
    Connection := TFDConnection.Create(Self);
-   Present := Now;
-   DecodeDate(Present, Year, Month, Day);
-   Label1.Caption := 'Today is Day ' + IntToStr(Day) + ' of Month ' + IntToStr(Month) + ' of Year '
-     + IntToStr(Year);
    try
       Connection:= FMenu.Connection;
    finally
